@@ -39,7 +39,7 @@ Partial Class LightsOut
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.ClientSize = New System.Drawing.Size(318, 384)
         Me.Controls.Add(Me.btnNewGame)
         Me.Name = "LightsOut"
         Me.Text = "Lights Out"

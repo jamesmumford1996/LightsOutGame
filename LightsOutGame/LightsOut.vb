@@ -1,16 +1,16 @@
 ﻿Public Class LightsOut
-    Private onColor As Color = Color.LightGreen
-    Private offColor As Color = Color.DarkGreen
-    Private gameSize As Integer = 5
-    Private lightArr(gameSize, gameSize) As Button
-    Public Sub DrawBoard()
+    Private ReadOnly onColor As Color = Color.LightGreen
+    Private ReadOnly offColor As Color = Color.DarkGreen
+    Private Const gameSize As Integer = 5
+    Private ReadOnly lightArr(gameSize, gameSize) As Button
+    Private Sub DrawBoard()
         'Create the button objects and draw them onto the window
 
         Const lightSpacing As Integer = 20
         Const lightSize As Integer = 50
-
-        Const leftOffset As Integer = 3
         Const topOffset As Integer = 50
+        Const leftOffset As Integer = 3
+
         'Create buttons for the whole array
         For i As Integer = 0 To gameSize - 1
             For j As Integer = 0 To gameSize - 1
@@ -36,62 +36,7 @@
         Me.MaximizeBox = False
 
     End Sub
-
-    Public Sub HandleLightClick(sender As Object, e As EventArgs)
-        'Handles a light button click and checks for winning state
-
-        'Extract 2D index from the event
-        Dim btn As Button = sender
-        Dim arrPos() As Integer = btn.Tag
-        Dim xPos, yPos As Integer
-        xPos = arrPos(0)
-        yPos = arrPos(1)
-
-        'Flip appropriate lights
-        ToggleLight(xPos, yPos)
-
-        'Check if all lights are out
-        If CheckWin() Then
-            MessageBox.Show("You Win! Try a new puzzle.", "Congratulations!")
-            InitialiseGame()
-        End If
-    End Sub
-
-    Public Function CheckWin()
-        Dim result As Boolean = False
-        'Check if all buttons on the grid are off (dark) using a LINQ query
-        result = lightArr.OfType(Of Button).All(Function(btnTemp) btnTemp.BackColor = offColor)
-        Return result
-    End Function
-
-    Public Sub ToggleLight(xPos As Integer, yPos As Integer)
-        'Change my color
-        ChangeButtonColor(xPos, yPos)
-        'Check if we are at any of the edges & flip adjacent light colors
-        If xPos > 0 Then
-            ChangeButtonColor(xPos - 1, yPos)
-        End If
-        If xPos < gameSize - 1 Then
-            ChangeButtonColor(xPos + 1, yPos)
-        End If
-        If yPos > 0 Then
-            ChangeButtonColor(xPos, yPos - 1)
-        End If
-        If yPos < gameSize - 1 Then
-            ChangeButtonColor(xPos, yPos + 1)
-        End If
-    End Sub
-    Private Sub ChangeButtonColor(xPos As Integer, yPos As Integer)
-        'Changes the color of a specified button
-        With lightArr(xPos, yPos)
-            If .BackColor = offColor Then
-                .BackColor = onColor
-            Else
-                .BackColor = offColor
-            End If
-        End With
-    End Sub
-    Public Sub InitialiseGame()
+    Private Sub InitialiseGame()
         'Set the starting grid of lights
         'To ensure this creates a solvable puzzle, start with all lights off and click random lights
 
@@ -119,13 +64,66 @@
         Next
 
     End Sub
+    Private Sub HandleLightClick(sender As Object, e As EventArgs)
+        'Handles a light button click and checks for winning state
+
+        'Extract 2D index from the event
+        Dim btn As Button = sender
+        Dim arrPos() As Integer = btn.Tag
+        Dim xPos, yPos As Integer
+        xPos = arrPos(0)
+        yPos = arrPos(1)
+
+        'Flip appropriate lights
+        ToggleLight(xPos, yPos)
+
+        'Check if all lights are out
+        If CheckWin() Then
+            MessageBox.Show("You Win! Try a new puzzle.", "Congratulations!")
+            InitialiseGame()
+        End If
+    End Sub
+    Private Sub ToggleLight(xPos As Integer, yPos As Integer)
+        'Change my color
+        ChangeButtonColor(xPos, yPos)
+        'Check if we are at any of the edges & flip adjacent light colors
+        If xPos > 0 Then
+            ChangeButtonColor(xPos - 1, yPos)
+        End If
+        If xPos < gameSize - 1 Then
+            ChangeButtonColor(xPos + 1, yPos)
+        End If
+        If yPos > 0 Then
+            ChangeButtonColor(xPos, yPos - 1)
+        End If
+        If yPos < gameSize - 1 Then
+            ChangeButtonColor(xPos, yPos + 1)
+        End If
+    End Sub
+    Private Sub ChangeButtonColor(xPos As Integer, yPos As Integer)
+        'Changes the color of a specified button
+        With lightArr(xPos, yPos)
+            If .BackColor = offColor Then
+                .BackColor = onColor
+            Else
+                .BackColor = offColor
+            End If
+        End With
+    End Sub
+    Private Function CheckWin()
+        Dim result As Boolean = False
+        'Check if all buttons on the grid are off (dark) using a LINQ query
+        result = lightArr.OfType(Of Button).All(Function(btnTemp) btnTemp.BackColor = offColor)
+        Return result
+    End Function
+
+    'Event handlers for predefined objects
     Private Sub LightsOut_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'Initial setup when the program form loads
         DrawBoard()
         InitialiseGame()
     End Sub
-
     Private Sub btnNewGame_Click(sender As Object, e As EventArgs) Handles btnNewGame.Click
         InitialiseGame()
     End Sub
-
 End Class
